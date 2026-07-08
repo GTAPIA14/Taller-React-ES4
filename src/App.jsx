@@ -3,6 +3,7 @@ import Tarjeta from "./components/Tarjeta";
 import Buscador from "./components/Buscador";
 import PanelFavoritos from "./components/PanelFavoritos";
 import PanelBloqueados from "./components/PanelBloqueados";
+import useLocalStorage from "./hooks/useLocalStorage";
 
 export default function App() {
   const [pokemons, setPokemons] = useState([]);
@@ -10,9 +11,11 @@ export default function App() {
   const [error, setError] = useState(null);
 
   const [busqueda, setBusqueda] = useState("");
-  const [favoritos, setFavoritos] = useState([]);
-  const [bloqueados, setBloqueados] = useState([]);
+  const [favoritos, setFavoritos] =
+useLocalStorage("favoritos", []);
 
+  const [bloqueados, setBloqueados] =
+useLocalStorage("bloqueados", []);
   useEffect(() => {
     const obtenerPokemons = async () => {
       try {
