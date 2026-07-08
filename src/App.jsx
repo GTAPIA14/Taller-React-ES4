@@ -11,11 +11,17 @@ export default function App() {
   const [error, setError] = useState(null);
 
   const [busqueda, setBusqueda] = useState("");
-  const [favoritos, setFavoritos] =
-useLocalStorage("favoritos", []);
 
-  const [bloqueados, setBloqueados] =
-useLocalStorage("bloqueados", []);
+  const [favoritos, setFavoritos] = useLocalStorage(
+    "favoritos",
+    []
+  );
+
+  const [bloqueados, setBloqueados] = useLocalStorage(
+    "bloqueados",
+    []
+  );
+
   useEffect(() => {
     const obtenerPokemons = async () => {
       try {
@@ -52,11 +58,15 @@ useLocalStorage("bloqueados", []);
   }, []);
 
   const alternarFavorito = (pokemon) => {
-    const existe = favoritos.some((fav) => fav.id === pokemon.id);
+    const existe = favoritos.some(
+      (fav) => fav.id === pokemon.id
+    );
 
     if (existe) {
       setFavoritos(
-        favoritos.filter((fav) => fav.id !== pokemon.id)
+        favoritos.filter(
+          (fav) => fav.id !== pokemon.id
+        )
       );
     } else {
       setFavoritos([...favoritos, pokemon]);
@@ -65,18 +75,24 @@ useLocalStorage("bloqueados", []);
 
   const quitarFavorito = (id) => {
     setFavoritos(
-      favoritos.filter((fav) => fav.id !== id)
+      favoritos.filter(
+        (fav) => fav.id !== id
+      )
     );
   };
 
   const bloquearPokemon = (pokemon) => {
-    const existe = bloqueados.some(
-      (bloq) => bloq.id === pokemon.id
-    );
+    if (
+      bloqueados.some(
+        (bloq) => bloq.id === pokemon.id
+      )
+    )
+      return;
 
-    if (existe) return;
-
-    setBloqueados([...bloqueados, pokemon]);
+    setBloqueados([
+      ...bloqueados,
+      pokemon,
+    ]);
 
     setFavoritos(
       favoritos.filter(
@@ -125,7 +141,7 @@ useLocalStorage("bloqueados", []);
       </div>
     );
   }
-  return (
+    return (
     <div className="min-h-screen bg-green-50 p-6">
 
       <header className="mb-8">
@@ -135,7 +151,7 @@ useLocalStorage("bloqueados", []);
         </h1>
 
         <p className="text-center text-slate-600 mt-2">
-          Busca, guarda y bloquea Pokémon
+          Busca, guarda y bloquea tus Pokémon favoritos
         </p>
 
       </header>
@@ -145,17 +161,61 @@ useLocalStorage("bloqueados", []);
         setBusqueda={setBusqueda}
       />
 
+      {/* Estadísticas */}
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+
+        <div className="bg-white rounded-2xl shadow-md p-5 text-center">
+
+          <h2 className="text-3xl font-bold text-teal-700">
+            {pokemons.length}
+          </h2>
+
+          <p className="text-slate-500 font-semibold">
+            Total Pokémon
+          </p>
+
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-md p-5 text-center">
+
+          <h2 className="text-3xl font-bold text-yellow-500">
+            {favoritos.length}
+          </h2>
+
+          <p className="text-slate-500 font-semibold">
+            Favoritos
+          </p>
+
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-md p-5 text-center">
+
+          <h2 className="text-3xl font-bold text-red-500">
+            {bloqueados.length}
+          </h2>
+
+          <p className="text-slate-500 font-semibold">
+            Bloqueados
+          </p>
+
+        </div>
+
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 
         <main className="lg:col-span-3">
 
           {pokemonsFiltrados.length === 0 && (
+
             <p className="text-center text-slate-500 mb-6">
               No se encontraron Pokémon.
             </p>
+
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
 
             {pokemonsFiltrados.map((pokemon) => (
 
@@ -175,7 +235,7 @@ useLocalStorage("bloqueados", []);
 
         </main>
 
-        <div className="space-y-6">
+        <div className="space-y-6 lg:sticky lg:top-5">
 
           <PanelFavoritos
             favoritos={favoritos}
@@ -190,6 +250,26 @@ useLocalStorage("bloqueados", []);
         </div>
 
       </div>
+      <footer className="mt-10 bg-white rounded-2xl shadow-md p-5 text-center">
+
+  <h2 className="text-xl font-bold text-teal-700">
+    Taller React ES4
+  </h2>
+
+  <p className="text-slate-600 mt-2">
+    Desarrollado por
+  </p>
+
+  <p className="text-lg font-semibold text-slate-700">
+    Gohans Tapia
+  </p>
+
+  <p className="text-sm text-slate-400 mt-4">
+    React • Vite • Tailwind CSS • PokeAPI
+  </p>
+
+</footer>
+
     </div>
   );
 }
