@@ -1,6 +1,17 @@
-export default function Tarjeta({ pokemon }) {
+export default function Tarjeta({
+  pokemon,
+  esFavorito,
+  alternarFavorito,
+}) {
   return (
-    <div className="bg-white rounded-2xl shadow-md p-4 hover:shadow-xl transition-all duration-300">
+    <div className="bg-white rounded-2xl shadow-md p-4 hover:shadow-xl transition-all duration-300 relative">
+
+      <button
+        onClick={() => alternarFavorito(pokemon)}
+        className="absolute top-3 right-3 text-2xl"
+      >
+        {esFavorito ? "⭐" : "☆"}
+      </button>
 
       <img
         src={pokemon.imagen}
