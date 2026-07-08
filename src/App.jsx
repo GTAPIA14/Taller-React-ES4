@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Tarjeta from "./components/Tarjeta";
 import Buscador from "./components/Buscador";
 import PanelFavoritos from "./components/PanelFavoritos";
+import PanelBloqueados from "./components/PanelBloqueados";
 
 export default function App() {
   const [pokemons, setPokemons] = useState([]);
@@ -10,6 +11,7 @@ export default function App() {
 
   const [busqueda, setBusqueda] = useState("");
   const [favoritos, setFavoritos] = useState([]);
+  const [bloqueados, setBloqueados] = useState([]);
 
   useEffect(() => {
     const obtenerPokemons = async () => {
@@ -64,9 +66,42 @@ export default function App() {
     );
   };
 
-  const pokemonsFiltrados = pokemons.filter((pokemon) =>
-    pokemon.name.toLowerCase().includes(busqueda.toLowerCase())
-  );
+  const bloquearPokemon = (pokemon) => {
+    const existe = bloqueados.some(
+      (bloq) => bloq.id === pokemon.id
+    );
+
+    if (existe) return;
+
+    setBloqueados([...bloqueados, pokemon]);
+
+    setFavoritos(
+      favoritos.filter(
+        (fav) => fav.id !== pokemon.id
+      )
+    );
+  };
+
+  const desbloquearPokemon = (id) => {
+    setBloqueados(
+      bloqueados.filter(
+        (bloq) => bloq.id !== id
+      )
+    );
+  };
+
+  const pokemonsFiltrados = pokemons
+    .filter((pokemon) =>
+      pokemon.name
+        .toLowerCase()
+        .includes(busqueda.toLowerCase())
+    )
+    .filter(
+      (pokemon) =>
+        !bloqueados.some(
+          (bloq) => bloq.id === pokemon.id
+        )
+    );
 
   if (cargando) {
     return (
@@ -87,7 +122,6 @@ export default function App() {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen bg-green-50 p-6">
 
@@ -98,7 +132,7 @@ export default function App() {
         </h1>
 
         <p className="text-center text-slate-600 mt-2">
-          Busca y guarda tus Pokémon favoritos
+          Busca, guarda y bloquea Pokémon
         </p>
 
       </header>
@@ -129,6 +163,7 @@ export default function App() {
                   (fav) => fav.id === pokemon.id
                 )}
                 alternarFavorito={alternarFavorito}
+                bloquearPokemon={bloquearPokemon}
               />
 
             ))}
@@ -137,13 +172,21 @@ export default function App() {
 
         </main>
 
-        <PanelFavoritos
-          favoritos={favoritos}
-          quitarFavorito={quitarFavorito}
-        />
+        <div className="space-y-6">
+
+          <PanelFavoritos
+            favoritos={favoritos}
+            quitarFavorito={quitarFavorito}
+          />
+
+          <PanelBloqueados
+            bloqueados={bloqueados}
+            desbloquearPokemon={desbloquearPokemon}
+          />
+
+        </div>
 
       </div>
-
     </div>
   );
 }
